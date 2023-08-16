@@ -1,0 +1,97 @@
+Web Scraping Lab
+
+Objectives
+After completing this lab you will be able to:
+
+Download a webpage using requests module
+Scrape all links from a web page
+Scrape all image urls from a web page
+Scrape data from html tables
+Scrape www.ibm.com
+Import the required modules and functions
+
+!pip install html5lib
+!pip install html.parser
+!pip install bs4
+from bs4 import BeautifulSoup # this module helps in web scrapping.
+import requests  # this module helps us to download a web page
+Requirement already satisfied: html5lib in /opt/conda/envs/Python-3.10/lib/python3.10/site-packages (1.1)
+Requirement already satisfied: webencodings in /opt/conda/envs/Python-3.10/lib/python3.10/site-packages (from html5lib) (0.5.1)
+Requirement already satisfied: six>=1.9 in /opt/conda/envs/Python-3.10/lib/python3.10/site-packages (from html5lib) (1.16.0)
+Requirement already satisfied: html.parser in /opt/conda/envs/Python-3.10/lib/python3.10/site-packages (0.2)
+Requirement already satisfied: ply in /opt/conda/envs/Python-3.10/lib/python3.10/site-packages (from html.parser) (3.11)
+Requirement already satisfied: bs4 in /opt/conda/envs/Python-3.10/lib/python3.10/site-packages (0.0.1)
+Requirement already satisfied: beautifulsoup4 in /opt/conda/envs/Python-3.10/lib/python3.10/site-packages (from bs4) (4.11.1)
+Requirement already satisfied: soupsieve>1.2 in /opt/conda/envs/Python-3.10/lib/python3.10/site-packages (from beautifulsoup4->bs4) (2.3.1)
+Download the contents of the web page
+
+url = "http://www.ibm.com"
+# get the contents of the webpage in text format and store in a variable called data
+html_data  = requests.get(url).text 
+Create a soup object using the class BeautifulSoup
+
+soup = BeautifulSoup(html_data, "html.parser") # create a soup object using the variable 'data'
+Scrape all links
+
+for link in soup.find_all('a'):  # in html anchor/link is represented by the tag <a>
+    print(link.get('href'))
+https://newsroom.ibm.com/2023-08-10-IBM-Completes-Acquisition-of-Apptio-Inc
+https://www.ibm.com/community/ibm-techxchange-conference
+https://www.ibm.com/products/watsonx-ai
+https://www.ibm.com/products/watsonx-data
+https://www.ibm.com/products/spss-statistics/pricing
+https://www.ibm.com/products/planning-analytics?lnk=flatitem
+https://www.ibm.com/cloud?lnk=flatitem
+https://www.ibm.com/products
+#bx--custom-footnotes
+https://www.ibm.com/consulting
+https://www.ibm.com/about
+None
+https://www.gartner.com/en/documents/4007140
+https://www.ibm.com/
+Scrape all images
+
+for link in soup.find_all('img'):# in html image is represented by the tag <img>
+    print(link.get('src'))
+https://1.dam.s81c.com/p/0c627169442d5243/ibm_watsonx_data_closeup_still_4k.jpg.global.sr_1x1.jpg
+https://1.dam.s81c.com/p/0c3ce2dfcccd1f24/watsonx-data-square.jpg
+https://1.dam.s81c.com/p/0c3ce2dfcccd1f25/watsonx-ai-square.jpg
+https://1.dam.s81c.com/p/0b5258b292cc8c3c/ibm-SPSS-home-card.png.global.xs_1x1.png
+https://1.dam.s81c.com/p/0b5258b33acc8e04/homepage-planning-analytics-card.png.global.xs_1x1.png
+https://1.dam.s81c.com/p/0aac9cf57bcbf324/dotcom-1-overview.jpg
+Scrape data from html tables
+#The below url contains a html table with data about colors and color codes.
+url = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DA0321EN-SkillsNetwork/labs/datasets/HTMLColorCodes.html"
+Before proceeding to scrape a web site, you need to examine the contents, and the way data is organized on the website. Open the above url in your browser and check how many rows and columns are there in the color table.
+
+# get the contents of the webpage in text format and store in a variable called data
+data  = requests.get(url).text
+soup = BeautifulSoup(data,"html5lib")
+---------------------------------------------------------------------------
+FeatureNotFound                           Traceback (most recent call last)
+Input In [25], in <cell line: 1>()
+----> 1 soup = BeautifulSoup(data,"html5lib")
+
+File /opt/conda/envs/Python-3.10/lib/python3.10/site-packages/bs4/__init__.py:248, in BeautifulSoup.__init__(self, markup, features, builder, parse_only, from_encoding, exclude_encodings, element_classes, **kwargs)
+    246     builder_class = builder_registry.lookup(*features)
+    247     if builder_class is None:
+--> 248         raise FeatureNotFound(
+    249             "Couldn't find a tree builder with the features you "
+    250             "requested: %s. Do you need to install a parser library?"
+    251             % ",".join(features))
+    253 # At this point either we have a TreeBuilder instance in
+    254 # builder, or we have a builder_class that we can instantiate
+    255 # with the remaining **kwargs.
+    256 if builder is None:
+
+FeatureNotFound: Couldn't find a tree builder with the features you requested: html5lib. Do you need to install a parser library?
+
+#find a html table in the web page
+table = soup.find('table') # in html table is represented by the tag <table>
+#Get all rows from the table
+for row in table.find_all('tr'): # in html table row is represented by the tag <tr>
+    # Get all columns in each row.
+    cols = row.find_all('td') # in html a column is represented by the tag <td>
+    color_name = cols[2].getText() # store the value in column 3 as color_name
+    color_code = cols[3].getText() # store the value in column 4 as color_code
+    print("{}--->{}".format(color_name,color_code))
