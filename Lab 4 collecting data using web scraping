@@ -1,0 +1,58 @@
+Hands-on Lab : Web Scraping
+Estimated time needed: 30 to 45 minutes
+
+Objectives
+In this lab you will perform the following:
+
+Extract information from a given web site
+Write the scraped data into a csv file.
+Extract information from the given web site
+You will extract the data from the below web site:
+#this url contains the data you need to scrape
+url = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DA0321EN-SkillsNetwork/labs/datasets/Programming_Languages.html"
+The data you need to scrape is the name of the programming language and average annual salary.
+It is a good idea to open the url in your web broswer and study the contents of the web page before you start to scrape.
+
+Import the required libraries
+
+!pip install html5lib
+!pip install html.parser
+!pip install bs4
+import pandas as pd
+from bs4 import BeautifulSoup # this module helps in web scrapping.
+import requests  # this module helps us to download a web page
+# Your code here
+Requirement already satisfied: html5lib in /opt/conda/envs/Python-3.10/lib/python3.10/site-packages (1.1)
+Requirement already satisfied: six>=1.9 in /opt/conda/envs/Python-3.10/lib/python3.10/site-packages (from html5lib) (1.16.0)
+Requirement already satisfied: webencodings in /opt/conda/envs/Python-3.10/lib/python3.10/site-packages (from html5lib) (0.5.1)
+Requirement already satisfied: html.parser in /opt/conda/envs/Python-3.10/lib/python3.10/site-packages (0.2)
+Requirement already satisfied: ply in /opt/conda/envs/Python-3.10/lib/python3.10/site-packages (from html.parser) (3.11)
+Requirement already satisfied: bs4 in /opt/conda/envs/Python-3.10/lib/python3.10/site-packages (0.0.1)
+Requirement already satisfied: beautifulsoup4 in /opt/conda/envs/Python-3.10/lib/python3.10/site-packages (from bs4) (4.11.1)
+Requirement already satisfied: soupsieve>1.2 in /opt/conda/envs/Python-3.10/lib/python3.10/site-packages (from beautifulsoup4->bs4) (2.3.1)
+
+Download the webpage at the url
+url = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DA0321EN-SkillsNetwork/labs/datasets/Programming_Languages.html"
+html_data=requests.get(url).text  #your code goes here
+
+Create a soup object
+soup=BeautifulSoup(html_data, "html.parser")#your code goes here
+
+Scrape the Language name and annual average salary.
+df = pd.DataFrame(columns=["Language", "Avg_Salary"])
+is_first_row = True
+​
+for row in soup.find("tbody").find_all('tr'):
+    col = row.find_all('td')
+    lang_name = col[1].string
+    ann_avg_sal = col[3].string
+​
+    df = df.append({"Language": lang_name, "Avg_Salary": ann_avg_sal}, ignore_index=True)
+​
+df = df.drop(index=0) # Removes the first row
+df.reset_index(drop=True, inplace=True) # Reset the index of the DataFrame
+​
+df.head()
+
+Save the scrapped data into a file named popular-languages.csv
+df.to_csv("popular_languages.csv")
