@@ -1,0 +1,28 @@
+This is a sample jupyter notebook
+Jupyter notebook lets you run python from your web browser.
+Here are a few simple things that you can do.
+
+Print 'Hello World'
+
+print('Hello World')
+Hello World
+Ask user for name and the print it.
+
+name = input("Please enter your name: ")
+print("Hello {}!! Hope you are having fun with jupyter notebooks.".format(name))
+Please enter your name: sr
+Hello sr!! Hope you are having fun with jupyter notebooks.
+Import a python module
+
+import sys
+Print the version of python
+
+print(sys.version)
+3.7.6 (default, Jan  8 2020, 13:42:34) 
+[Clang 4.0.1 (tags/RELEASE_401/final)]
+Print today's date
+
+import datetime
+today = datetime.datetime.today()
+print(datetime.datetime.strftime(today,'%d-%B-%Y'))
+28-October-2020
