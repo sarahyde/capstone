@@ -1,0 +1,203 @@
+
+
+In this module you get to work with the cleaned dataset from the previous module.
+
+In this assignment you will perform the task of exploratory data analysis. You will find out the distribution of data, presence of outliers and also determine the correlation between different columns in the dataset.
+
+Objectives
+In this lab you will perform the following:
+
+Identify the distribution of data in the dataset.
+
+Identify outliers in the dataset.
+
+Remove outliers from the dataset.
+
+Identify correlation between features in the dataset.
+
+Hands on Lab
+Import the pandas module.
+
+import pandas as pd
+import numpy as np
+%matplotlib inline 
+​
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+!pip install seaborn wordcloud 
+​
+#import seaborn
+import seaborn as sns
+Load the dataset into a dataframe.
+
+df.head()
+df = pd.read_csv("https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DA0321EN-SkillsNetwork/LargeData/m2_survey_data.csv")
+df.head()
+Respondent	MainBranch	Hobbyist	OpenSourcer	OpenSource	Employment	Country	Student	EdLevel	UndergradMajor	...	WelcomeChange	SONewContent	Age	Gender	Trans	Sexuality	Ethnicity	Dependents	SurveyLength	SurveyEase
+0	4	I am a developer by profession	No	Never	The quality of OSS and closed source software ...	Employed full-time	United States	No	Bachelor’s degree (BA, BS, B.Eng., etc.)	Computer science, computer engineering, or sof...	...	Just as welcome now as I felt last year	Tech articles written by other developers;Indu...	22.0	Man	No	Straight / Heterosexual	White or of European descent	No	Appropriate in length	Easy
+1	9	I am a developer by profession	Yes	Once a month or more often	The quality of OSS and closed source software ...	Employed full-time	New Zealand	No	Some college/university study without earning ...	Computer science, computer engineering, or sof...	...	Just as welcome now as I felt last year	NaN	23.0	Man	No	Bisexual	White or of European descent	No	Appropriate in length	Neither easy nor difficult
+2	13	I am a developer by profession	Yes	Less than once a month but more than once per ...	OSS is, on average, of HIGHER quality than pro...	Employed full-time	United States	No	Master’s degree (MA, MS, M.Eng., MBA, etc.)	Computer science, computer engineering, or sof...	...	Somewhat more welcome now than last year	Tech articles written by other developers;Cour...	28.0	Man	No	Straight / Heterosexual	White or of European descent	Yes	Appropriate in length	Easy
+3	16	I am a developer by profession	Yes	Never	The quality of OSS and closed source software ...	Employed full-time	United Kingdom	No	Master’s degree (MA, MS, M.Eng., MBA, etc.)	NaN	...	Just as welcome now as I felt last year	Tech articles written by other developers;Indu...	26.0	Man	No	Straight / Heterosexual	White or of European descent	No	Appropriate in length	Neither easy nor difficult
+4	17	I am a developer by profession	Yes	Less than once a month but more than once per ...	The quality of OSS and closed source software ...	Employed full-time	Australia	No	Bachelor’s degree (BA, BS, B.Eng., etc.)	Computer science, computer engineering, or sof...	...	Just as welcome now as I felt last year	Tech articles written by other developers;Indu...	29.0	Man	No	Straight / Heterosexual	Hispanic or Latino/Latina;Multiracial	No	Appropriate in length	Easy
+5 rows × 85 columns
+
+Distribution
+Determine how the data is distributed
+The column ConvertedComp contains Salary converted to annual USD salaries using the exchange rate on 2019-02-01.
+
+This assumes 12 working months and 50 working weeks.
+
+Plot the distribution curve for the column ConvertedComp.
+
+# your code goes here
+df['ConvertedComp'].plot(kind='density')
+​
+plt.title('Distribution for Annual USD Salaries')
+plt.ylabel('USD')
+plt.xlabel('Density')
+​
+plt.show()
+
+Plot the histogram for the column ConvertedComp.
+
+# your code goes here
+df['ConvertedComp'].plot(kind='hist')
+​
+plt.title('Distribution for Annual USD Salaries')
+plt.ylabel('USD')
+plt.xlabel('Density')
+​
+plt.show()
+
+What is the median of the column ConvertedComp?
+
+# your code goes here
+df['ConvertedComp'].median()
+57745.0
+How many responders identified themselves only as a Man?
+
+df_genval
+# your code goes here
+df_genval=df['Gender'].value_counts()
+df_genval
+Man                                                            10480
+Woman                                                            731
+Non-binary, genderqueer, or gender non-conforming                 63
+Man;Non-binary, genderqueer, or gender non-conforming             26
+Woman;Non-binary, genderqueer, or gender non-conforming           14
+Woman;Man                                                          9
+Woman;Man;Non-binary, genderqueer, or gender non-conforming        2
+Name: Gender, dtype: int64
+Find out the median ConvertedComp of responders identified themselves only as a Woman?
+
+# your code goes here
+df.loc[df['Gender'] == 'Woman', ['ConvertedComp']].median()
+# Another option gives you a broad result
+df.groupby('Gender')['ConvertedComp'].median()
+Gender
+Man                                                            57744.0
+Man;Non-binary, genderqueer, or gender non-conforming          59520.0
+Non-binary, genderqueer, or gender non-conforming              67142.0
+Woman                                                          57708.0
+Woman;Man                                                      21648.0
+Woman;Man;Non-binary, genderqueer, or gender non-conforming    30244.0
+Woman;Non-binary, genderqueer, or gender non-conforming        65535.5
+Name: ConvertedComp, dtype: float64
+Give the five number summary for the column Age?
+
+Double click here for hint.
+
+# your code goes here
+df['Age'].median()
+29.0
+Plot a histogram of the column Age.
+
+# your code goes here
+df['Age'].plot(kind='hist')
+​
+plt.title('Age of Employees')
+plt.ylabel('Number of Employees')
+plt.xlabel('Age')
+​
+plt.show()
+
+Outliers
+Finding outliers
+Find out if outliers exist in the column ConvertedComp using a box plot?
+
+# your code goes here
+df_convercomp= df['ConvertedComp'].transpose()
+df_convercomp.plot(kind='box', figsize=(8, 6))
+​
+plt.title('ConvertedComp')
+plt.ylabel('Salary')
+​
+plt.show()
+
+Find out the Inter Quartile Range for the column ConvertedComp.
+
+df['Age'].plot.box(figsize=(20,8),vert=False)
+​
+plt.title('Age')
+​
+plt.show
+<function matplotlib.pyplot.show(close=None, block=None)>
+
+Qu1= df['Age'].quantile(0.25)
+Qu3 = df['Age'].quantile(0.75)
+​
+IQR1 = Qu3 - Qu1
+​
+IQR1
+10.0
+# your code goes here
+Q1= df['ConvertedComp'].quantile(0.25)
+Q3 = df['ConvertedComp'].quantile(0.75)
+​
+IQR = Q3 - Q1
+​
+IQR
+73132.0
+Find out the upper and lower bounds.
+
+lower_range=Q1-(1.5*IQR)
+upper_range=Q3+(1.5*IQR)
+print(lower_range)
+print(upper_range)
+-82830.0
+209698.0
+# your code goes here
+lower_bound=df['ConvertedComp']<lower_range
+upper_bound=df['ConvertedComp']>upper_range
+​
+no_of_outliers=df[lower_bound|upper_bound]
+​
+print(len(no_of_outliers))
+879
+Identify how many outliers are there in the ConvertedComp column.
+
+# your code goes here
+Outliers=Q3 + (1.5*IQR)
+Outliers
+209698.0
+Create a new dataframe by removing the outliers from the ConvertedComp column.
+
+len(new_df)
+# your code goes here
+x= df['ConvertedComp'].clip(lower_range, upper_range)
+new_df= df[df['ConvertedComp']==x]
+len(new_df)
+9703
+Correlation
+Finding correlation
+Find the correlation between Age and all other numerical columns.
+
+# your code goes here
+df.corr()
+Respondent	CompTotal	ConvertedComp	WorkWeekHrs	CodeRevHrs	Age
+Respondent	1.000000	-0.013490	0.002181	-0.015314	0.004621	0.004041
+CompTotal	-0.013490	1.000000	0.001037	0.003510	0.007063	0.006970
+ConvertedComp	0.002181	0.001037	1.000000	0.021143	-0.033865	0.105386
+WorkWeekHrs	-0.015314	0.003510	0.021143	1.000000	0.026517	0.036518
+CodeRevHrs	0.004621	0.007063	-0.033865	0.026517	1.000000	-0.020469
+Age	0.004041	0.006970	0.105386	0.036518	-0.020469	1.000000
